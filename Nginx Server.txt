@@ -1,0 +1,49 @@
+Nginx Server:
+
+Practical 1:
+# install apache on deb2 
+-> sudo apt-get install apache2
+-> sudo sh -c 'echo "My Apache" > /var/www/html/index.html'
+
+# install nginx on deb1
+-> sudo apt-get install nginx
+-> sudo rm /etc/nginx/sites-enabled/*
+-> sudo systemctl restart nginx
+-> sudo nano /etc/nginx/sites-available/rp.conf
+    server {
+	listen 80;
+	location / {
+		proxy_pass [apache server ip]; 
+	}
+    }
+-> sudo ln -s /etc/nginx/sites-available/rp.conf /etc/nginx/sites-enabled/
+-> sudo ls -l /etc/nginx/sites-enabled/
+-> sudo nginx -t -c /etc/nginx/nginx.conf
+-> sudo systemctl restart nginx
+
+# on browser browse with deb1 ip we will get apache site.
+
+Practical 2:
+# Reverse Proxy with Apache2 on nginx server:
+# on deb1
+-> sudo nano /etc/apache/sites-availables/000-default.conf
+   <VirtualHost>
+	ProxyPreserverHost On
+	ProxyPassMatch ^/internal/(.*[.](jpg|png))$ http://[apache server ip]/public/$1
+   </VirtualHost>
+
+# Create files in /var/www/html/public/include1/
+	- hello.conf
+	- one.gif
+	- one.jpg
+	- one.png
+	- one.txt
+
+-> sudo a2enmod proxy_http 
+-> sudo systemctl restart apache2 
+-> sudo systemctl status apache2
+
+# Access apache files with nginx ip
+	- hello.conf , one.txt, one.gif - not accessed
+	- one.jpg, one.png - accessed
+

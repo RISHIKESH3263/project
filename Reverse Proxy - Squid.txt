@@ -1,0 +1,18 @@
+Reverse Proxy - Squid
+
+# on Deb 2:
+-> sudo apt-get install apache2
+-> sh -c 'echo "My Apache2" > /var/www/html/index.html'
+
+# on Deb1
+-> sudo apt-get update && sudo apt-get upgrade
+-> sudo apt-get install squid
+-> sudo nano /etc/squid/squid.conf
+	[1195] - acl shuhari_users dstdomain [squid_server_ip]
+	[1378] - http_access allow shuhari_users
+	[1906] - http_port 3128 accel defaultsite=[squid_server_ip] vhost
+	[3239] - cache_peer [apache_server_ip] parent 80 0 no-query originserver name=shuhari
+	[3277] - cache_peer_access shuhari allow shuhari_users
+	             - cache_peer_access shuhari deny all
+-> sudo systemctl restart squid 
+-> on browser - http://[squid_server_ip]:3128 

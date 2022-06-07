@@ -1,0 +1,33 @@
+VPN for Linux/Windows:
+
+# Install openvpn package
+-> sudo apt-get install openvpn
+
+# Create server.conf on deb1:
+-> nano server.conf
+     - proto udp
+     - port 1194
+     - dev tun
+     - auth none 
+     - cipher none
+     - ifconfig 10.8.0.1     10.8.0.2
+     - verb 3 
+
+# run server.conf on deb1
+
+# Create client.conf on deb2:
+-> nano client.conf
+     - remote [server ip]
+     - proto udp
+     - port 1194
+     - dev tun
+     - auth none 
+     - cipher none
+     - ifconfig 10.8.0.2     10.8.0.1
+     - verb 3 
+
+# run client.conf on deb2
+
+# check tun ip for both deb1 and deb2
+-> ip a
+
