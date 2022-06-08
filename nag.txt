@@ -1,5 +1,5 @@
-apt install -y apache2 apache2-utils autoconf gcc libc6 libgd-dev make php python python python3 unzip wget
-cd /temp/
+apt install -y apache2 apache2-utils autoconf gcc libc6 libgd-dev make php python python3 unzip wget
+cd /tmp/
 wget http://192.168.1.151/sw/sec_tools/nagios/nagios-4.4.5.tar.gz
 tar -xf nagios-4.4.5.tar.gz
 cd  nagios-4.4.5
@@ -16,7 +16,7 @@ make install-webconf
 a2enmod rewrite
 a2enmod cgi
 htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
-/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+sudo /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 systemctl restart apache2
 systemctl restart nagios
 apt-get install -y automake autotools-dev bc build-essential dc gawk gettext libmcrypt-dev libnet-snmp-perl libssl-dev snmp
@@ -28,10 +28,25 @@ cd nagios-plugins-release-2.2.1
 ./configure
 make
 make install
+# Now in browser <deb ip>/nagios
+#In windows mechine downloads ncpa plugins(token give any password port no 5693)
+#in browser <win ip >:5693
 cd /usr/local/nagios/libexec/
 wget http://192.168.1.151/sw/sec_tools/nagios/check_ncpa.py
 chmod 755 check_ncpa.py
+sudo ./check_ncpa -t rishi123 -H <win ip> -M memory/virtual
 cd /usr/local/nagios/etc/objects/
+sudo nano /commands.cfg
+#write at last end 
+define command {
+            command_name    check_ncpa
+            command_line    $user1$check_ncpa.py -H $HOSTADDRESS$ $ARG1$
+ }
+sudo nano /usr/local/nagios/etc/nagios.cfg
+#uncomment line no 51
+sudo mkdir /usr/local/nagios/etc/servers
+sudo nano /usr/local/nagios/etc/servers/win_7-1.cfg
+
 
 
 
